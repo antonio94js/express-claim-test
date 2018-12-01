@@ -5,6 +5,7 @@ import web from './web';
 import error from './errors';
 import router from './router';
 import db from './db';
+import passport from './passport';
 
 /* Graceful Shutdown our Http Server */
 const gracefulShutdown = async (db) => {
@@ -48,7 +49,7 @@ export default {
                     throw err;
                 } 
                 setSignals(gracefulShutdown.bind(null, sequelize))(SIGNALS);
-                
+                passport.loadStrategies();
                 winston.info(`Server is running on port ${web.port} :)`);
             });
         } catch (error) {
