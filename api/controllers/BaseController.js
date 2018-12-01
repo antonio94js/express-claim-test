@@ -1,13 +1,12 @@
 
 class BaseController {
     async get(req, res, next) {
-        // const { Base  } = models;
-        const Base = await Base.findAll();
-        res.json(Base);
+        // await Base.findAll();
+        res.json({});
     }
 
 }
 
-const controller = new AuthorController();
+const controller = new BaseController();
 
 export default controller;
