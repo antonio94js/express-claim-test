@@ -13,6 +13,7 @@ class DatabaseCore {
     }
 
     initModels(sequelize) {
+        
         const files = require('require-all')(path.join(__dirname,'../../api/models'))
         const models = R.mapObjIndexed(
             model => R.prop('default', model).init(sequelize, Sequelize),
@@ -26,8 +27,13 @@ class DatabaseCore {
         );
 
         startAssociation(models);
-
-        global.models = models;
+            console.log(models);
+        R.forEachObjIndexed((model, modelName) => {
+            // console.log(modelName);
+            // console.log(model);
+            global[modelName] = model
+            // console.log(global[modelName]);
+        }, models)
 
         return models;
     }

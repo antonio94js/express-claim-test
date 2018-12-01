@@ -37,6 +37,8 @@
     "globals": {
         "winston": true,
         "errorWrap": true,
-        "models": true
+        "models": true,
+        "Base": true,
+        "AuthenticationError": true
     }
 }

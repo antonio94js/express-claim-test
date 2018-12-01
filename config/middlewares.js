@@ -1,9 +1,11 @@
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
+import passport from 'passport';
 import R from 'ramda';
 
 // Define a list of middleware
 const middlewares = [
+    passport.initialize(),
     bodyParser.urlencoded({ extended: false }),
     bodyParser.json(),
     morgan('dev'),
