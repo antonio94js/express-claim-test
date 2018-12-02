@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import BaseRouter from './BaseRouter';
 import ClaimRouter from './ClaimRouter';
 import AuthRouter from './AuthRouter';
 import MeRouter from './MeRouter';
@@ -12,7 +11,7 @@ const router = Router();
 router
     .use('/v1/claims', isAuth, ClaimRouter)
     .use('/v1/me', isAuth, MeRouter)
-    .use('/v1/base', isAuth, BaseRouter)
+    // .use('/v1/base', isAuth, BaseRouter)
     .use('/v1/auth', AuthRouter)
 
 

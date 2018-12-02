@@ -2,13 +2,17 @@ import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import passport from 'passport';
 import R from 'ramda';
+import cors from 'cors';
 
+const env = process.env.NODE_ENV;
+const empty = (req, res, next) => { next() }
 // Define a list of middleware
 const middlewares = [
+    cors(),
     passport.initialize(),
     bodyParser.urlencoded({ extended: false }),
     bodyParser.json(),
-    morgan('dev'),
+    env !== 'test' ? morgan('dev') : empty,
     
 ];
 

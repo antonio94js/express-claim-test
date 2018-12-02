@@ -1,6 +1,6 @@
 import R from 'ramda';
 
-const justValidFields = R.pick(['fligth_code', 'description', 'record_id']);
+const justValidFields = R.pick(['fligth_code', 'description']);
 
 class ClaimController {
     async create(req, res) {

@@ -42,7 +42,6 @@ class LocalStrategy extends Strategy {
 
             return done(null, { accessToken });
         } catch (e) {
-            winston.error(e);
             return done(e, null);
         }
     }
