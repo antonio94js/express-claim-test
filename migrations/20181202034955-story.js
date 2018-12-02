@@ -1,32 +1,21 @@
-'use strict';
-
 module.exports = {
-    up: (queryInterface, Sequelize) => queryInterface.createTable('Users', {
+    up: (queryInterface, Sequelize) => queryInterface.createTable('Stories', {
         id: {
             allowNull: false,
-            autoIncrement: true,
             primaryKey: true,
             type: Sequelize.INTEGER,
         },
-        email: {
-            type: Sequelize.STRING,
+        record_id: {
+            type: Sequelize.INTEGER,
             allowNull: false,
-            validate: {
-                isEmail: true,
-            },
+            autoIncrement: true,
         },
-        name: {
-            type: Sequelize.STRING,
-            allowNull: false,
-        },
-        password: {
+        question: {
             type: Sequelize.STRING,
             allowNull: false,
         },
-        rol: {
-            type: Sequelize.ENUM,
-            values: ['admin', 'user'],
-            allowNull: false,
+        answer: {
+            type: Sequelize.STRING,
         },
         createdAt: {
             allowNull: false,
@@ -40,5 +29,5 @@ module.exports = {
         },
     }),
 
-    down: queryInterface => queryInterface.dropTable('Users'),
+    down: queryInterface => queryInterface.dropTable('Stories'),
 };

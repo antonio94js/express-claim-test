@@ -40,6 +40,12 @@
         "models": true,
         "Base": true,
         "User": true,
-        "AuthenticationError": true
+        "Claim": true,
+        "Story": true,
+        "Record": true,
+        "AuthenticationError": true,
+        "AuthorizationError": true,
+        "ClaimError": true,
+        "SequelizeError": true
     }
 }
