@@ -32,10 +32,11 @@ describe('Authentication Workflow test', () => {
         expect(body).to.have.property('accessToken')
     });
     it('Should get 401 when invalid credentials are provided', async () => {
-        credentials.password = 'invalidpasssword'
+        const creden = { ...credentials };
+        creden.password = 'invalidpasssword'
         const { body } = await request
             .post(basePath)
-            .send(credentials)
+            .send(creden)
             .expect(401);
     });
 });
