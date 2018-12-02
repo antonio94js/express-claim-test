@@ -41,7 +41,7 @@ describe('StoryController', () => {
             res = mockRes();
         });
         it('should call res.json with the response of Story.create method', async () => {
-            const record_id = 1234567
+            const record_id = 1234;
             const question = "¿cuando podria enviarme la información solicitada?"
             const req = mockReq({
                 params: {
@@ -59,6 +59,26 @@ describe('StoryController', () => {
             expect(R.merge).to.be.have.been.calledOnce;
             expect(Story.create).to.be.have.been.calledOnceWithExactly({ question, record_id });
             expect(res.json).to.be.have.been.calledOnceWithExactly(201, story);
+        });
+        it('should call res.send with 204', async () => {
+            const recordId = 1234;
+            const storyId = 5678;
+            const answer = "Al tiro se la envio."
+            const req = mockReq({
+                params: {
+                    recordId,
+                    storyId,
+                },
+                body: {
+                    answer,
+                }
+            })
+            // Mock the getByClaim method to avoid side effects
+            sandbox.stub(Story, 'reply').resolves(true);
+
+            await StoryController.reply(req, res);
+            expect(Story.reply).to.be.have.been.calledOnceWithExactly(recordId, storyId, answer);
+            expect(res.send).to.be.have.been.calledOnceWithExactly(204);
         });
     });
 });
