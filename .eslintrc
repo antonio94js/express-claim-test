@@ -39,6 +39,7 @@
         "errorWrap": true,
         "models": true,
         "Base": true,
+        "User": true,
         "AuthenticationError": true
     }
 }
