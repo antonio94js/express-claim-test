@@ -16,7 +16,7 @@
     "db:rollback": "NODE_ENV=test node_modules/.bin/sequelize db:migrate:undo:all",
     "pretest": "node_modules/.bin/sequelize db:migrate &&",
     "test:unit": "mocha -R spec --compilers js:babel-core/register ./test/unit/**/*.js",
-    "test:integration": "export NODE_ENV=test && npm run db:rollback && npm run db:migrate && npm run db:seeds && mocha -R spec --compilers js:babel-core/register ./test/integration/**/*.js "
+    "test:integration": "export NODE_ENV=test && npm run db:rollback && npm run db:migrate && npm run db:seeds && mocha -R spec --compilers js:babel-core/register ./test/integration/*.js "
   },
   "license": "MIT",
   "dependencies": {
