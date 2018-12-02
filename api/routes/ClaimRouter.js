@@ -1,14 +1,14 @@
 import { Router } from 'express';
 import ClaimController from '../controllers/ClaimController';
-import AuthenticationPolicies from '../policies/AuthenticationPolicies';
+import AuthorizationPolicies from '../policies/AuthorizationPolicies';
 
-// const { isRol } = AuthenticationPolicies;
+const { isRol } = AuthorizationPolicies;
 // const isAdmin = isRol('admin');
-// const isUser = isRol('user');
+const isUser = isRol('user');
 // const isUserOrAdmin = isRol(['user', 'admin']);
 
 const router = Router();
 router
-    .post('/', errorWrap(ClaimController.create));
+    .post('/', isUser, errorWrap(ClaimController.create));
 
 export default router;
