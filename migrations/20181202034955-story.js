@@ -4,11 +4,11 @@ module.exports = {
             allowNull: false,
             primaryKey: true,
             type: Sequelize.INTEGER,
+            autoIncrement: true,
         },
         record_id: {
             type: Sequelize.INTEGER,
             allowNull: false,
-            autoIncrement: true,
         },
         question: {
             type: Sequelize.STRING,

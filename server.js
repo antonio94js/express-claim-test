@@ -6,5 +6,6 @@ require('dotenv').config();
 const app = express();
 
 config.setAppConfig(app);
-config.startServer(app);
+
+module.exports = config.startServer(app);
 
