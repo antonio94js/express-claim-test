@@ -1,4 +1,5 @@
 import Sequelize from 'sequelize';
+import bcrypt from 'bcryptjs';
 
 class User extends Sequelize.Model {
     static init(sequelize, DataTypes) {
@@ -36,6 +37,11 @@ class User extends Sequelize.Model {
             sequelize,
           },
         );
+    }
+
+    async isValidPassword(password) {
+        const res = await bcrypt.compare(password, this.password);
+        return res;
     }
 
     static associate(models) {
