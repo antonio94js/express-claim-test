@@ -27,13 +27,7 @@ class DatabaseCore {
         );
 
         startAssociation(models);
-            console.log(models);
-        R.forEachObjIndexed((model, modelName) => {
-            // console.log(modelName);
-            // console.log(model);
-            global[modelName] = model
-            // console.log(global[modelName]);
-        }, models)
+        R.forEachObjIndexed((model, modelName) => global[modelName] = model, models)
 
         return models;
     }
