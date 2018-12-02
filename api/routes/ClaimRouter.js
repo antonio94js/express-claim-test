@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import ClaimController from '../controllers/ClaimController';
+import RecordController from '../controllers/RecordController';
+import StoryController from '../controllers/StoryController';
 import AuthorizationPolicies from '../policies/AuthorizationPolicies';
 import ClaimPolicies from '../policies/ClaimPolicies';
 
@@ -19,5 +21,11 @@ router
     .put('/:id/assign', isAdmin, errorWrap(ClaimController.assign))
     .put('/:id/close', isAdmin, isMyClaimLikeAttendant, errorWrap(ClaimController.close))
     .delete('/:id', isUser, isMyClaimLikeClaimer, errorWrap(ClaimController.remove))
+
+router
+    .get('/:claimId/records', errorWrap(RecordController.get));
+
+router
+    .get('/:claimId/records/:recordId/story', errorWrap(StoryController.create));
 
 export default router;

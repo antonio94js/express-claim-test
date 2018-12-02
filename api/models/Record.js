@@ -22,6 +22,18 @@ class Record extends Sequelize.Model {
         this.hasMany(models.Story, { foreignKey: 'record_id' });
         this.belongsTo(models.Claim, { foreignKey: 'record_id' });
     }
+
+    static async get(recordId) {
+        const record = await this.findOne({
+            includes:[{
+                model: Story,
+            }],
+            where: {
+                id: recordId,
+            },
+        });
+        return record;
+    }
 }
 
 export default Record;
