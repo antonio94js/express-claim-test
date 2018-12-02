@@ -15,6 +15,12 @@ class ClaimController {
         await Claim.assignToAttendant(claimId, attendantId);
         res.send(204);
     }
+    async close(req, res) {
+        const { id: claimId } = req.params;
+        const { id: attendantId } = req.user;
+        await Claim.close(claimId, attendantId);
+        res.send(204);
+    }
 
 }
 

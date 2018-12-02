@@ -72,12 +72,23 @@ class User extends Sequelize.Model {
         } 
         await this.update({
             attendant: attendantId,
+            status: 'wip',
         }, {
             where: {
                 id: claimId,
             },
         });
         return true;
+    }
+    static async close(claimId) {
+        const res = await this.update({
+            status: 'resolved',
+        }, {
+            where: {
+                id: claimId,
+            },
+        });
+        return res;
     }
 }
 
