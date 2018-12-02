@@ -2,6 +2,7 @@ import R from 'ramda';
 
 class ClaimPolicies {
     isMyClaim(type) {
+        type = type === 'claimer' ? 'claimer_id' : 'attendant_id';
         const isClaimMiddleware = async (req, res, next) => {
             const { user: { id } } = req;
             const { id: claimId } = req.params;

@@ -9,6 +9,23 @@ class ClaimController {
         const claim = await Claim.create(payload);
         res.json(201, claim);
     }
+    async getAll(req, res) {
+        const claims = await Claim.getAll(req.query);
+        res.json(claims);
+    }
+    async getMyClaim(req, res) {
+        const { id: userId } = req.user;
+        const claims = await Claim.giveMeMy(userId);
+        res.json(claims);
+    }
+
+    async getById(req, res) {
+        const { id: claimId } = req.params;
+        const { id: userId } = req.user;
+        const claim = await Claim.getById(claimId, userId);
+        res.json(claim);
+    }
+
     async assign(req, res) {
         const { id: claimId } = req.params;
         const { id: attendantId } = req.user;
@@ -19,6 +36,11 @@ class ClaimController {
         const { id: claimId } = req.params;
         const { id: attendantId } = req.user;
         await Claim.close(claimId, attendantId);
+        res.send(204);
+    }
+    async remove(req, res) {
+        const { id: claimId } = req.params;
+        await Claim.remove(claimId);
         res.send(204);
     }
 

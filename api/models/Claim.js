@@ -1,7 +1,8 @@
 import Sequelize from 'sequelize';
 import uuidv4 from 'uuid/v4';
+import R from 'ramda';
 
-class User extends Sequelize.Model {
+class Claim extends Sequelize.Model {
     static init(sequelize, DataTypes) {
         return super.init(
           {
@@ -24,7 +25,7 @@ class User extends Sequelize.Model {
                 allowNull: false,
                 autoIncrement: true,
             },
-            claimer: {
+            claimer_id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
             },
@@ -32,7 +33,7 @@ class User extends Sequelize.Model {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            attendant: {
+            attendant_id: {
                 type: DataTypes.INTEGER,
             },
             status: {
@@ -54,8 +55,8 @@ class User extends Sequelize.Model {
     }
 
     static associate(models) {
-        this.belongsTo(models.User, { foreignKey: 'claimer' });
-        this.belongsTo(models.User, { foreignKey: 'attendant' });
+        this.belongsTo(models.User, { foreignKey: 'claimer_id', as: 'claimer'  });
+        this.belongsTo(models.User, { foreignKey: 'attendant_id', as: 'attendant' });
         this.hasOne(models.Record, { as: 'record', foreignKey: 'record_id' });
     }
     static async create(data) {
@@ -65,13 +66,23 @@ class User extends Sequelize.Model {
         const claim = await super.create({ ...data, id, record_id: record.id });
         return claim;
     }
+    static async getAll(rawQuery = {}) {
+        const validFiels = R.pick(['fligth_code', 'ticket_number', 'claimer_id', 'attendant_id', 'status']);
+        const query = validFiels(rawQuery);
+        const res = await this.findAll({
+            where: {
+                ...query,
+            },
+        });
+        return res;
+    }
     static async assignToAttendant(claimId, attendantId) {
         const claim = await this.findOne({ where: { id: claimId } });
-        if (claim.attendant) {
+        if (claim.attendant_id) {
             throw new ClaimError('AlreadyTakenClaim', `The claim with the id ${claimId} has been taken`);
         } 
         await this.update({
-            attendant: attendantId,
+            attendant_id: attendantId,
             status: 'wip',
         }, {
             where: {
@@ -90,6 +101,45 @@ class User extends Sequelize.Model {
         });
         return res;
     }
+    static async giveMeMy(userId) {
+        console.log(userId);
+        const res = await this.findAll({
+            where: {
+                $or: [
+                    { claimer_id: userId },
+                    { attendant_id: userId },
+                ],
+            },
+        });
+        return res;
+    }
+    static async getById(claimId, userId) {
+        const claim = await this.findOne({
+            include: [
+                { model: User, as: 'claimer', attributes: ['name', 'email'] },
+                { model: User, as: 'attendant', attributes: ['name', 'email'] },
+            ],
+            where: {
+                id: claimId,
+                $or: [
+                    { claimer_id: userId },
+                    { attendant_id: userId },
+                ],
+            },
+        });
+        if (!claim) {
+            throw new ClaimError('ClaimNotFound', `You don't have a claim with the Id ${claimId}`)
+        }
+        return claim;
+    }
+    static async remove(claimId) {
+        await this.destroy({
+            where: {
+              id: claimId,
+            },
+        });
+        return true;
+    }
 }
 
-export default User;
+export default Claim;

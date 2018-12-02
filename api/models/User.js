@@ -45,8 +45,8 @@ class User extends Sequelize.Model {
     }
 
     static associate(models) {
-        this.hasMany(models.Claim, { foreignKey: 'claimer' });
-        this.hasMany(models.Claim, { foreignKey: 'attendant' });
+        this.hasMany(models.Claim, { foreignKey: 'claimer_id' });
+        this.hasMany(models.Claim, { foreignKey: 'attendant_id' });
        
     }
 }

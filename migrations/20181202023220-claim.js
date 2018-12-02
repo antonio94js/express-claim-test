@@ -18,11 +18,11 @@ module.exports = {
             allowNull: false,
             autoIncrement: true,
         },
-        claimer: {
+        claimer_id: {
             type: Sequelize.INTEGER,
             allowNull: false,
         },
-        attendant: {
+        attendant_id: {
             type: Sequelize.INTEGER,
         },
         status: {
