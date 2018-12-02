@@ -1,5 +1,5 @@
 module.exports = {
-    Unauthorized: {
+    MissingFields: {
         description: 'Invalid apikey.',
         status: 401,
     },
@@ -7,8 +7,8 @@ module.exports = {
         description: 'Does not have the necessary privileges to perform this operation.',
         status: 403,
     },
-    InvalidGoogleToken: {
-        description: 'You have provided an invalid google token.',
+    InvalidCredentials: {
+        description: 'The credentials are invalids.',
         status: 401,
     },
     InvalidAccessToken: {
@@ -28,15 +28,7 @@ module.exports = {
         status: 401,
     },
     MissingCredentials: {
-        description: 'You haven\'t provided all the needed credentials (RUT and Password).',
+        description: 'You haven\'t provided all the needed credentials (Email and Password).',
         status: 401,
-    },
-    InvalidCredentials: {
-        description: 'You have provided invalid credentials.',
-        status: 401,
-    },
-    MissingCollaboratorRUT: {
-        description: 'Your SB user doesn\'t have a RUT associated.',
-        status: 409,
     },
 };
