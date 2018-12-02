@@ -22,21 +22,21 @@ class AuthenticationPolicies {
 
     async jwt(req, res, next) {
 
-        const cb = async (internalErr, user, tokenError) => {
+        const cb = (internalErr, user, tokenError) => {
             if (tokenError && tokenError.name === 'TokenExpiredError') {
-                next(new AuthenticationError('InvalidAccessToken', 'The Authentication token has expired'));
+                return next(new AuthenticationError('InvalidAccessToken', 'The Authentication token has expired'));
             }
             if (tokenError && tokenError.name === 'JsonWebTokenError') {
-                next(new AuthenticationError('InvalidAccessToken', 'The Authentication token is invalid or was vulnerated'));
+                return next(new AuthenticationError('InvalidAccessToken', 'The Authentication token is invalid or was vulnerated'));
             }
             if (tokenError) {
-                next(new AuthenticationError('InvalidAccessToken', 'Invalid token, Format is Authorization: Bearer [token]'));
+                return next(new AuthenticationError('InvalidAccessToken', 'Invalid token, Format is Authorization: Bearer [token]'));
             }
             if (internalErr) {
-                next(internalErr);
+                return next(internalErr);
             }
-            req.logIn(user, sessionConfig, (errLogin) => {
-                if (errLogin) return next(internalErr);
+            req.logIn(user, sessionConfig, (errSession) => {
+                if (errSession) return next(errSession);
                 return next();
             });
         };

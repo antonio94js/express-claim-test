@@ -47,5 +47,6 @@ export default {
         acquire: 30000,
         idle: 10000,
     },
-    operatorsAliases,
+	operatorsAliases,
+	logging: process.env.NODE_ENV !== 'test',
 };

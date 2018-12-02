@@ -98,40 +98,72 @@ describe('AuthenticationPolicies', () => {
         beforeEach(function () {
             res = mockRes();
         });
-        it('should be call next with MissingCredentials code when missingCredentials is true', async () => {
+        it('should be call next with InvalidAccessToken code when TokenExpiredError is true', async () => {
             const req = mockReq()
             const next = sinon.spy();
+            const tokenError = {
+                name: 'TokenExpiredError'
+            }
 
             sandbox
                 .stub(passport, 'authenticate')
-                .withArgs('local', sinon.match.any)
+                .withArgs('jwt', sinon.match.any)
                 .callsFake((strategy, cb) => {
-                    cb(null, null, true) // err, accessToken, missingCredentials
+                    cb(null, null, tokenError) // err, accessToken, missingCredentials
                     return () => {};
                 })
            
-            await AuthenticationPolicies.localAuth(req, res, next);
+            await AuthenticationPolicies.jwt(req, res, next);
             expect(next).to.have.been.calledWith(sinon.match({
-                "content": {
-                    code: 'MissingCredentials'
+                "fullContent": {
+                    code: 'InvalidAccessToken',
+                    message: 'The Authentication token has expired',
                 }
             }));
         });
-        it('should be call next with err object when err param is passed', async () => {
+        it('should be call next with InvalidAccessToken code when JsonWebTokenError is true', async () => {
             const req = mockReq()
             const next = sinon.spy();
-            const error = new Error();
+            const tokenError = {
+                name: 'JsonWebTokenError'
+            }
 
             sandbox
                 .stub(passport, 'authenticate')
-                .withArgs('local', sinon.match.any)
+                .withArgs('jwt', sinon.match.any)
                 .callsFake((strategy, cb) => {
-                    cb(error, null, null) // err, accessToken, missingCredentials
+                    cb(null, null, tokenError) // err, accessToken, missingCredentials
                     return () => {};
                 })
            
-            await AuthenticationPolicies.localAuth(req, res, next);
-            expect(next).to.have.been.calledWith(sinon.match.instanceOf(Error));
+            await AuthenticationPolicies.jwt(req, res, next);
+            expect(next).to.have.been.calledWith(sinon.match({
+                "fullContent": {
+                    code: 'InvalidAccessToken',
+                    message: 'The Authentication token is invalid or was vulnerated',
+                }
+            }));
+        });
+        it('should be call next with InvalidAccessToken code when tokenError exist and name does not exist', async () => {
+            const req = mockReq()
+            const next = sinon.spy();
+            const tokenError = { }
+
+            sandbox
+                .stub(passport, 'authenticate')
+                .withArgs('jwt', sinon.match.any)
+                .callsFake((strategy, cb) => {
+                    cb(null, null, tokenError) // err, accessToken, missingCredentials
+                    return () => {};
+                })
+           
+            await AuthenticationPolicies.jwt(req, res, next);
+            expect(next).to.have.been.calledWith(sinon.match({
+                "fullContent": {
+                    code: 'InvalidAccessToken',
+                    message: 'Invalid token, Format is Authorization: Bearer [token]',
+                }
+            }));
         });
         it('should call req.logIn when no error is passed', async () => {
             const req = {
@@ -141,13 +173,13 @@ describe('AuthenticationPolicies', () => {
 
             sandbox
                 .stub(passport, 'authenticate')
-                .withArgs('local', sinon.match.any)
+                .withArgs('jwt', sinon.match.any)
                 .callsFake((strategy, cb) => {
                     cb(null, {}, null) // err, accessToken, missingCredentials
                     return () => {};
                 })
            
-            await AuthenticationPolicies.localAuth(req, res, next);
+            await AuthenticationPolicies.jwt(req, res, next);
             expect(req.logIn).to.be.have.been.calledOnce;
         });
     });
