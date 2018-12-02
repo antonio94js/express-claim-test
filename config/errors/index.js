@@ -41,7 +41,10 @@ class ErrorCore {
 	 * @author AntonioMejias 
 	 */
     globalErrorHandler(err, req, res, next) {
-        winston.error(err);
+        if (process.env.NODE_ENV !== 'test') {
+            console.log("imprimir");
+            winston.error(err);
+        }
         const error = this.validateSequelizeError(err);
         res.status(error.status || 500).json(error.fullContent || error);
     }

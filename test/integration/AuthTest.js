@@ -2,19 +2,26 @@
 // import sinon from 'sinon';
 // import sinonchai from 'sinon-chai';
 import chai, { expect } from 'chai';
-import assertArrays from 'chai-arrays';
+import supertest from 'supertest';
 // import { mockReq, mockRes } from 'sinon-express-mock';
 import app from '../../server';
 // import AuthController from '../../../api/controllers/AuthController';
-// import record from '../fixtures/record';
+import credentials from './fixtures/userCredentials';
 
 // chai.use(sinonchai);
-chai.use(assertArrays);
+// chai.use(assertArrays);
 
 let server;
+let request;
+
+const basePath = '/api/v1/auth'
+
 before(async () => {
     try {
         server = await app;
+        request = supertest(server);
+        // server.close();
+        // console.log(request);
     } catch (e) {
         winston.error(e);
     }
@@ -23,24 +30,65 @@ before(async () => {
 after(() => {
     server.close();
 });
+describe('Authentication Workflow test', () => {
 
-// let sandbox;
-// beforeEach(() => {
-//     // sandbox = sinon.createSandbox();
-// });
 
-// afterEach(() => {
-//     // sandbox.restore();
-// });
-
-describe('AuthController', () => {
-    describe('get', () => {
-        let res = null;
-        beforeEach(function () {
-            // res = mockRes();
-        });
-        it('should call res.json with the value injected into user prop', async () => {
-            expect(true).to.be.true
-        });
+    it('Should return an accesstoken if valid credentials are provided', async () => {
+        // console.log(request);
+        const { body } = await request
+            .post(basePath)
+            .send(credentials)
+            .expect(200);
+        expect(body).to.have.property('accessToken')
     });
+    it('Should get 401 when invalid credentials are provided', async () => {
+        // console.log(request);
+        credentials.password = 'invalidpasssword'
+        const { body } = await request
+            .post(basePath)
+            .send(credentials)
+            .expect(401);
+    });
+
+    // it('Should get clients', async () => {
+    //     const {
+    //         body
+    //     } = await request
+    //         .get('/clients')
+    //         .set('apikey', apikey)
+    //         .expect(200);
+    // });
+
+    // it('Should get client by id', async () => {
+    //     const {
+    //         body
+    //     } = await request
+    //         .get(`/clients/${client._id}`)
+    //         .set('apikey', apikey)
+    //         .expect(200);
+    // });
+
+    // it('Should update client by id', async () => {
+    //     const {
+    //         body
+    //     } = await request
+    //         .put(`/clients/${client._id}`)
+    //         .set('apikey', apikey)
+    //         .send({
+    //             dni: '12345678900'
+    //         })
+    //         .expect(204);
+    // });
+
+    // it('Should delete client by id', async () => {
+    //     const {
+    //         body
+    //     } = await request
+    //         .delete(`/clients/${client._id}`)
+    //         .set('apikey', apikey)
+    //         .expect(204);
+    // });
+
+
+
 });

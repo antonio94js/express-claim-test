@@ -38,23 +38,27 @@ export default {
         router,
         middlewares,
     ),
-    async startServer(app) {
-        try {
-            const sequelize = await db.startConnection();
-            winston.info('DB connection has been established successfully.');
-            const server = app.listen(web.port, '0.0.0.0', async (err) => {
-                if (err) {
-                    // In case of an error, close the previous connection
-                    await sequelize.connectionManager.close();
-                    throw err;
-                } 
-                setSignals(gracefulShutdown.bind(null, sequelize))(SIGNALS);
-                passport.loadStrategies();
-                winston.info(`Server is running on port ${web.port} :)`);
-            });
-            return server;
-        } catch (error) {
-            winston.error(error)  
-        }
+    startServer(app) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const sequelize = await db.startConnection();
+                winston.info('DB connection has been established successfully.');
+                const server = app.listen(web.port, '0.0.0.0', async (err) => {
+                    if (err) {
+                        // In case of an error, close the previous connection
+                        await sequelize.connectionManager.close();
+                        throw err;
+                    } 
+                    setSignals(gracefulShutdown.bind(null, sequelize))(SIGNALS);
+                    passport.loadStrategies();
+                    winston.info(`Server is running on port ${web.port} :)`);
+                    resolve(server);
+                });
+            } catch (error) {
+                winston.error(error)  
+                reject(error);
+            }
+        })
+        
     },
 };
