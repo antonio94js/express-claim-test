@@ -30,7 +30,8 @@ class ErrorCore {
 	 */
     globalErrorHandler(err, req, res, next) {
         winston.error(err);
-        res.status(err.status || 500).json(err.fullContent || err);
+        const error = validateSequelizeError(err);
+        res.status(error.status || 500).json(error.fullContent || error);
     }
 
 }
@@ -41,4 +42,15 @@ export default (app) => {
     app.use(error.notFoundRouter);
     app.use(error.globalErrorHandler);
     return app;
+};
+
+const validateSequelizeError = (err) => {
+    switch (err.name) {
+        case 'SequelizeValidationError': {
+            return new SequelizeError('InvalidRequestPayload', err);
+        }
+        default: {
+            return err;
+        }
+    }
 };

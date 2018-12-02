@@ -40,6 +40,8 @@
         "models": true,
         "Base": true,
         "User": true,
-        "AuthenticationError": true
+        "Claim": true,
+        "AuthenticationError": true,
+        "SequelizeError": true
     }
 }
