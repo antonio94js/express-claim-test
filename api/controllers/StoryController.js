@@ -7,7 +7,7 @@ class StoryController {
         // const { id: claimer } = req.user;
         const { recordId } = req.params;
         const payload = R.merge(justValidFields(req.body), { record_id: recordId });
-        const story = await Claim.create(payload);
+        const story = await Story.create(payload);
         res.json(201, story);
     }
     // async create(req, res) {
@@ -17,10 +17,9 @@ class StoryController {
     //     const story = await Claim.create(payload);
     //     res.json(201, story);
     // }
-    async close(req, res) {
-        const { id: claimId } = req.params;
-        const { id: attendantId } = req.user;
-        await Claim.close(claimId, attendantId);
+    async reply(req, res) {
+        const { recordId, storyId } = req.params;
+        await Story.reply(recordId, storyId, req.body.answer);
         res.send(204);
     }
 

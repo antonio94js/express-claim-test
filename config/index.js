@@ -42,7 +42,7 @@ export default {
         try {
             const sequelize = await db.startConnection();
             winston.info('DB connection has been established successfully.');
-            app.listen(web.port, '0.0.0.0', async (err) => {
+            const server = app.listen(web.port, '0.0.0.0', async (err) => {
                 if (err) {
                     // In case of an error, close the previous connection
                     await sequelize.connectionManager.close();
@@ -52,6 +52,7 @@ export default {
                 passport.loadStrategies();
                 winston.info(`Server is running on port ${web.port} :)`);
             });
+            return server;
         } catch (error) {
             winston.error(error)  
         }

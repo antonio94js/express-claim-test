@@ -12,20 +12,22 @@ const isAdmin = isRol('admin');
 const isUser = isRol('user');
 const isMyClaimLikeAttendant = isMyClaim('attendant');
 const isMyClaimLikeClaimer = isMyClaim('claimer');
+const isMyClaimLikeBoth = isMyClaim(['claimer', 'attendant']);
 
 const router = Router();
 router
     .post('/', isUser, errorWrap(ClaimController.create))
     .get('/', isAdmin, errorWrap(ClaimController.getAll))
-    .get('/:id', errorWrap(ClaimController.getById))
-    .put('/:id/assign', isAdmin, errorWrap(ClaimController.assign))
-    .put('/:id/close', isAdmin, isMyClaimLikeAttendant, errorWrap(ClaimController.close))
-    .delete('/:id', isUser, isMyClaimLikeClaimer, errorWrap(ClaimController.remove))
+    .get('/:claimId', errorWrap(ClaimController.getById))
+    .put('/:claimId/assign', isAdmin, errorWrap(ClaimController.assign))
+    .put('/:claimId/close', isAdmin, isMyClaimLikeAttendant, errorWrap(ClaimController.close))
+    .delete('/:claimId', isUser, isMyClaimLikeClaimer, errorWrap(ClaimController.remove))
 
 router
-    .get('/:claimId/records', errorWrap(RecordController.get));
+    .get('/:claimId/records', isMyClaimLikeBoth, errorWrap(RecordController.get));
 
 router
-    .get('/:claimId/records/:recordId/story', errorWrap(StoryController.create));
+    .post('/:claimId/records/:recordId/story', isMyClaimLikeBoth, errorWrap(StoryController.create))
+    .put('/:claimId/records/:recordId/story/:storyId', isMyClaimLikeBoth, errorWrap(StoryController.reply));
 
 export default router;

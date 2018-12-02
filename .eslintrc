@@ -45,6 +45,8 @@
         "Record": true,
         "AuthenticationError": true,
         "AuthorizationError": true,
+        "StoryError": true,
+        "RecordError": true,
         "ClaimError": true,
         "SequelizeError": true
     }

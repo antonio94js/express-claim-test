@@ -10,6 +10,10 @@ class Record extends Sequelize.Model {
                 autoIncrement: true,
                 type: DataTypes.INTEGER,
             },
+            claim_id: {
+                allowNull: false,
+                type: DataTypes.INTEGER,
+            },
           },
           {
             modelName: 'Record',
@@ -19,17 +23,28 @@ class Record extends Sequelize.Model {
     }
 
     static associate(models) {
-        this.hasMany(models.Story, { foreignKey: 'record_id' });
-        this.belongsTo(models.Claim, { foreignKey: 'record_id' });
+        this.hasMany(models.Story, { foreignKey: 'record_id', as: 'stories' });
+        this.belongsTo(models.Claim, { foreignKey: 'claim_id' });
     }
 
-    static async get(recordId) {
+    static async getById(id) {
+        const record = await this.findById(id);
+        if (!record) {
+            throw new RecordError('RecordNotFound', `You don't have a record with the Id ${id}`)
+        }
+        return record;
+    }
+
+    static async getByClaim(claimId) {
+        // if claim does not exist, throw an error
+        await Claim.getById(claimId);
+
         const record = await this.findOne({
-            includes:[{
-                model: Story,
+            include: [{
+                model: Story, as: 'stories',
             }],
             where: {
-                id: recordId,
+                claim_id: claimId,
             },
         });
         return record;

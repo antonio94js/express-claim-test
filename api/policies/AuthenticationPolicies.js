@@ -6,7 +6,7 @@ const sessionConfig = {
 class AuthenticationPolicies {
 
     async localAuth(req, res, next) {
-        const cb = async (err, accessToken, missingCredentials) => {
+        const cb = (err, accessToken, missingCredentials) => {
             if (missingCredentials) {
                 return next(new AuthenticationError('MissingCredentials', 'You have missing some credentials fields.'));
             } else if (err) {

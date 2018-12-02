@@ -1,9 +1,7 @@
-import R from 'ramda';
-
 class RecordController {
     async get(req, res) {
-        const { recordId } = req.params;
-        const record = await Record.get(recordId);
+        const { claimId } = req.params;
+        const record = await Record.getByClaim(claimId);
         res.json(record);
     }
 
