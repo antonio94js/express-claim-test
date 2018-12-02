@@ -56,10 +56,28 @@ class User extends Sequelize.Model {
     static associate(models) {
         this.belongsTo(models.User, { foreignKey: 'claimer' });
         this.belongsTo(models.User, { foreignKey: 'attendant' });
+        this.hasOne(models.Record, { as: 'record', foreignKey: 'record_id' });
     }
-    static create(data) {
-        console.log("aqui toy perrritoooo");
-        return super.create(data)
+    static async create(data) {
+        const record = await Record.create({});
+        console.log(record);
+        const id = uuidv4();
+        const claim = await super.create({ ...data, id, record_id: record.id });
+        return claim;
+    }
+    static async assignToAttendant(claimId, attendantId) {
+        const claim = await this.findOne({ where: { id: claimId } });
+        if (claim.attendant) {
+            throw new ClaimError('AlreadyTakenClaim', `The claim with the id ${claimId} has been taken`);
+        } 
+        await this.update({
+            attendant: attendantId,
+        }, {
+            where: {
+                id: claimId,
+            },
+        });
+        return true;
     }
 }
 

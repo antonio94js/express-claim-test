@@ -1,5 +1,16 @@
 import config from './config';
 
+const validateSequelizeError = (err) => {
+    switch (err.name) {
+        case 'SequelizeValidationError': {
+            return new SequelizeError('InvalidRequestPayload', err);
+        }
+        default: {
+            return err;
+        }
+    }
+};
+
 /**
  * @class ErrorCore
  * @classdesc Error main core for the express app
@@ -9,6 +20,7 @@ class ErrorCore {
 
     constructor() {
         config.buildErrors();
+        this.globalErrorHandler = this.globalErrorHandler.bind(this);
     }
     /**
 	 * @method notFoundRouter
@@ -30,8 +42,23 @@ class ErrorCore {
 	 */
     globalErrorHandler(err, req, res, next) {
         winston.error(err);
-        const error = validateSequelizeError(err);
+        const error = this.validateSequelizeError(err);
         res.status(error.status || 500).json(error.fullContent || error);
+    }
+    /**
+	 * @method validateSequelizeError
+	 * @description validate whether the error is a sequelize error
+	 * @author AntonioMejias 
+	 */
+    validateSequelizeError(err) {
+        switch (err.name) {
+            case 'SequelizeValidationError': {
+                return new SequelizeError('InvalidRequestPayload', err);
+            }
+            default: {
+                return err;
+            }
+        }
     }
 
 }
@@ -44,13 +71,3 @@ export default (app) => {
     return app;
 };
 
-const validateSequelizeError = (err) => {
-    switch (err.name) {
-        case 'SequelizeValidationError': {
-            return new SequelizeError('InvalidRequestPayload', err);
-        }
-        default: {
-            return err;
-        }
-    }
-};

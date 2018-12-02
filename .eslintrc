@@ -41,8 +41,11 @@
         "Base": true,
         "User": true,
         "Claim": true,
+        "Story": true,
+        "Record": true,
         "AuthenticationError": true,
         "AuthorizationError": true,
+        "ClaimError": true,
         "SequelizeError": true
     }
 }
