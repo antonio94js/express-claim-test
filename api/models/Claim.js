@@ -57,12 +57,12 @@ class Claim extends Sequelize.Model {
     static associate(models) {
         this.belongsTo(models.User, { foreignKey: 'claimer_id', as: 'claimer'  });
         this.belongsTo(models.User, { foreignKey: 'attendant_id', as: 'attendant' });
-        this.hasOne(models.Record, { as: 'record', foreignKey: 'record_id' });
+        this.hasOne(models.Record, { as: 'record', foreignKey: 'claim_id' });
     }
+    
     static async create(data) {
-        const record = await Record.create({});
-        console.log(record);
         const id = uuidv4();
+        const record = await Record.create({ claim_id: id });
         const claim = await super.create({ ...data, id, record_id: record.id });
         return claim;
     }
@@ -113,7 +113,8 @@ class Claim extends Sequelize.Model {
         });
         return res;
     }
-    static async getById(claimId, userId) {
+
+    static async getByIdAndUser(claimId, userId) {
         const claim = await this.findOne({
             include: [
                 { model: User, as: 'claimer', attributes: ['name', 'email'] },
@@ -127,6 +128,13 @@ class Claim extends Sequelize.Model {
                 ],
             },
         });
+        if (!claim) {
+            throw new ClaimError('ClaimNotFound', `You don't have a claim with the Id ${claimId}`)
+        }
+        return claim;
+    }
+    static async getById(claimId) {
+        const claim = await this.findById(claimId);
         if (!claim) {
             throw new ClaimError('ClaimNotFound', `You don't have a claim with the Id ${claimId}`)
         }
