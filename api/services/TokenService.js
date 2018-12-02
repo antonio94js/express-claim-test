@@ -1,5 +1,7 @@
 import jwt from 'jsonwebtoken';
 
+require('dotenv').config();
+
 class TokenService {
 
     createToken(payload, expiresIn = '7d') {

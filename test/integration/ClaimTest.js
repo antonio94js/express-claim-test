@@ -73,7 +73,6 @@ describe('Claim Workflow test', () => {
         let accessToken
         before(async () => {
             const basePath = '/api/v1/auth'
-            console.log(adminCredentials);
             const { body } = await request
                 .post(basePath)
                 .send(adminCredentials)
@@ -83,7 +82,6 @@ describe('Claim Workflow test', () => {
 
         it('Should return 204 and change the status and the attendant Id for the claim', async () => {
             const userData = jwt.verify(accessToken, process.env.JWT_SECRET);
-            console.log(`${basePath}/${claimId}/assign`);
             await request
                 .put(`${basePath}/${claimId}/assign`)
                 .set('Authorization', `Bearer ${accessToken}`)
@@ -101,7 +99,6 @@ describe('Claim Workflow test', () => {
         });
         it('Should return 422 get the claim is already taken', async () => {
             const userData = jwt.verify(accessToken, process.env.JWT_SECRET);
-            console.log(`${basePath}/${claimId}/assign`);
             const { body } = await request
                 .put(`${basePath}/${claimId}/assign`)
                 .set('Authorization', `Bearer ${accessToken}`)
@@ -118,7 +115,6 @@ describe('Claim Workflow test', () => {
         let accessToken
         before(async () => {
             const basePath = '/api/v1/auth'
-            console.log(adminCredentials);
             const { body } = await request
                 .post(basePath)
                 .send(adminCredentials)
@@ -128,7 +124,6 @@ describe('Claim Workflow test', () => {
 
         it('Should return 204 and change the claim status to resolved', async () => {
             const userData = jwt.verify(accessToken, process.env.JWT_SECRET);
-            console.log(`${basePath}/${claimId}/assign`);
             await request
                 .put(`${basePath}/${claimId}/close`)
                 .set('Authorization', `Bearer ${accessToken}`)
@@ -145,7 +140,6 @@ describe('Claim Workflow test', () => {
         });
         it('Should return 422 get the claim is already taken', async () => {
             const userData = jwt.verify(accessToken, process.env.JWT_SECRET);
-            console.log(`${basePath}/${claimId}/assign`);
             const { body } = await request
                 .put(`${basePath}/${claimId}/assign`)
                 .set('Authorization', `Bearer ${accessToken}`)
@@ -162,7 +156,6 @@ describe('Claim Workflow test', () => {
             let accessToken
             before(async () => {
                 const basePath = '/api/v1/auth'
-                console.log(userCredentials);
                 const { body } = await request
                     .post(basePath)
                     .send(userCredentials)
@@ -187,7 +180,6 @@ describe('Claim Workflow test', () => {
             let accessToken
             before(async () => {
                 const basePath = '/api/v1/auth'
-                console.log(userCredentials);
                 const { body } = await request
                     .post(basePath)
                     .send(adminCredentials)
